@@ -4,8 +4,8 @@
     "pass": true,
     "missing": [],
     "rounds": 1,
-    "sec": 0.004,
-    "approx_tokens": 100
+    "sec": 0.005,
+    "approx_tokens": 87
   },
   {
     "id": "release-note",
@@ -13,38 +13,38 @@
     "missing": [],
     "rounds": 1,
     "sec": 0.002,
-    "approx_tokens": 95
+    "approx_tokens": 89
   },
   {
     "id": "incident-report",
     "pass": true,
     "missing": [],
     "rounds": 1,
-    "sec": 0.002,
-    "approx_tokens": 94
+    "sec": 0.003,
+    "approx_tokens": 89
   },
   {
     "id": "onboarding-doc",
     "pass": true,
     "missing": [],
     "rounds": 1,
-    "sec": 0.002,
-    "approx_tokens": 96
+    "sec": 0.003,
+    "approx_tokens": 90
   },
   {
     "id": "ab-test-plan",
     "pass": true,
     "missing": [],
     "rounds": 1,
-    "sec": 0.002,
-    "approx_tokens": 105
+    "sec": 0.003,
+    "approx_tokens": 94
   },
   {
     "id": "vendor-compare",
     "pass": true,
     "missing": [],
     "rounds": 1,
-    "sec": 0.002,
-    "approx_tokens": 108
+    "sec": 0.003,
+    "approx_tokens": 96
   }
 ]

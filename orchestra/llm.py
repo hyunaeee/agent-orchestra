@@ -21,7 +21,11 @@ class MockLLM:
                 "2) writer가 조사 노트를 바탕으로 결과물을 작성한다\n"
                 "3) critic이 루브릭 충족 여부를 검수하고 미흡하면 재작성을 요청한다"
             )
-        if role == "researcher":
+        if role.startswith("researcher"):
+            if role.endswith("risks"):
+                return "- 리스크 점검: 누락되기 쉬운 예외 상황과 실행 리스크를 결과물에 명시할 것"
+            if role.endswith("structure"):
+                return "- 형식 점검: 섹션 헤더로 항목을 구분하고 결론 요약을 갖출 것"
             items = _keywords(prompt)
             lines = [f"- {kw}: 과제 요구사항 — 결과물에 반드시 다뤄야 함" for kw in items]
             return "\n".join(lines) if lines else "- 과제 일반 요건 정리"

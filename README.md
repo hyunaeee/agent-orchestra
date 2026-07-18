@@ -5,16 +5,19 @@ supervisor가 과제를 분해하고, 역할 에이전트들이 A2A 메시지로
 critic이 승인할 때까지 재작성 루프를 도는 최소-완결 레퍼런스 구현입니다.
 
 ```
-supervisor ──▶ researcher ──▶ writer ──▶ critic ──▶ END
-                                ▲           │
-                                └─ REVISE ──┘   (conditional edge, max rounds)
+              ┌─▶ researcher_requirements ─┐
+supervisor ───┼─▶ researcher_risks ────────┼─▶ writer ──▶ critic ──▶ END
+   (fan-out)  └─▶ researcher_structure ────┘     ▲           │
+               같은 superstep — ainvoke 시 동시     └─ REVISE ──┘  (conditional edge, max rounds)
 ```
 
 ## 핵심 구성
 
 | 구성 요소 | 구현 |
 |---|---|
-| **오케스트레이션** | LangGraph `StateGraph` — supervisor 계획 수립 → 순차 실행 → critic의 조건부 엣지로 재작성 루프 |
+| **오케스트레이션** | LangGraph `StateGraph` — supervisor 계획 수립 → 조건부 엣지 재작성 루프 |
+| **병렬 fan-out** | 관점이 다른 리서처 3명(요구항목·리스크·형식)이 한 superstep에서 동시 실행, `Annotated[list, operator.add]` 리듀서로 노트 병합 후 writer가 join |
+| **LangSmith 트레이싱** | `LANGSMITH_TRACING=true` + `LANGSMITH_API_KEY`면 그래프 superstep 자동 트레이스 + 커스텀 LLM 호출은 `@traceable` 스팬 — 키 없으면 무해한 no-op |
 | **공유 메모리** | `SharedMemory` — 에이전트 간 A2A 메시지 로그 + 롤링 컨텍스트 윈도우 + 스크래치패드 |
 | **절차적 메모리** | `ProceduralMemory` — critic이 승인 시 "교훈"을 JSON으로 영속화, 이후 실행에서 writer 프롬프트에 자동 주입 |
 | **A2A 메시지** | `Envelope(sender, recipient, intent, content, ts)` — 모든 에이전트 통신이 봉투 단위로 기록·재생 가능 |
@@ -26,25 +29,35 @@ supervisor ──▶ researcher ──▶ writer ──▶ critic ──▶ END
 ```bash
 pip install -r requirements.txt
 
-python demo.py           # 과제 하나를 팀에 던지고 모든 hop을 출력
+python demo.py           # 과제 하나를 팀에 던지고 모든 hop을 출력 (fan-out은 ainvoke로 동시 실행)
 python eval/run_eval.py  # 평가셋 6개 태스크 일괄 실행 + 리포트
+
+# LangSmith 트레이싱 (선택)
+export LANGSMITH_TRACING=true LANGSMITH_API_KEY=ls-...   # 대시보드에서 superstep·LLM 스팬 확인
 ```
 
-`demo.py` 출력 (오프라인 mock, 2번째 실행 — 절차 메모리가 주입된 상태):
+`demo.py` 출력 (오프라인 mock — 절차 메모리가 주입된 실행):
 
 ```
+=== NOTES (3 researchers, parallel superstep) ===
+- 도입 배경: 과제 요구사항 — 결과물에 반드시 다뤄야 함
+- ...
+- 리스크 점검: 누락되기 쉬운 예외 상황과 실행 리스크를 결과물에 명시할 것
+- 형식 점검: 섹션 헤더로 항목을 구분하고 결론 요약을 갖출 것
+
 === FINAL DRAFT (writer) ===
 ## 결과 보고
-### 도입 배경
-...
+### 도입 배경 ... ### 리스크 점검 ... ### 형식 점검 ...
 > 이전 실행에서 배운 것 반영: 요구 항목을 섹션 헤더로 명시하면 누락이 줄어든다.
 
 === A2A MESSAGE LOG ===
-  supervisor → *        [plan]   1) researcher가 과제의 핵심 항목을 조사한다 ...
-  researcher → writer   [notes]  - 도입 배경: 과제 요구사항 ...
-      writer → critic   [draft]  ## 결과 보고 ...
-      critic → writer   [review] APPROVE 루브릭 전 항목 충족 ...
-      critic → *        [lesson] 요구 항목을 섹션 헤더로 명시하면 누락이 줄어든다.
+              supervisor → *        [plan]   1) researcher가 과제의 핵심 항목을 조사한다 ...
+ researcher_requirements → writer   [notes]  - 도입 배경: 과제 요구사항 ...
+        researcher_risks → writer   [notes]  - 리스크 점검: ...
+    researcher_structure → writer   [notes]  - 형식 점검: ...
+                  writer → critic   [draft]  ## 결과 보고 ...
+                  critic → writer   [review] APPROVE 루브릭 전 항목 충족 ...
+                  critic → *        [lesson] 요구 항목을 섹션 헤더로 명시하면 누락이 줄어든다.
 ```
 
 `eval/run_eval.py` 결과 (오프라인 judge):
