@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+procedural_memory.json
+eval/eval_memory.json

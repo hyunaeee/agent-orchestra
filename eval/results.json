@@ -1,0 +1,50 @@
+[
+  {
+    "id": "proposal-helpdesk",
+    "pass": true,
+    "missing": [],
+    "rounds": 1,
+    "sec": 0.004,
+    "approx_tokens": 100
+  },
+  {
+    "id": "release-note",
+    "pass": true,
+    "missing": [],
+    "rounds": 1,
+    "sec": 0.002,
+    "approx_tokens": 95
+  },
+  {
+    "id": "incident-report",
+    "pass": true,
+    "missing": [],
+    "rounds": 1,
+    "sec": 0.002,
+    "approx_tokens": 94
+  },
+  {
+    "id": "onboarding-doc",
+    "pass": true,
+    "missing": [],
+    "rounds": 1,
+    "sec": 0.002,
+    "approx_tokens": 96
+  },
+  {
+    "id": "ab-test-plan",
+    "pass": true,
+    "missing": [],
+    "rounds": 1,
+    "sec": 0.002,
+    "approx_tokens": 105
+  },
+  {
+    "id": "vendor-compare",
+    "pass": true,
+    "missing": [],
+    "rounds": 1,
+    "sec": 0.002,
+    "approx_tokens": 108
+  }
+]

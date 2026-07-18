@@ -1,0 +1,2 @@
+langgraph>=0.2
+anthropic>=0.40 ; python_version >= "3.10"  # optional — offline mock used when no key
