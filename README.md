@@ -88,6 +88,7 @@ pass rate: 6/6 (100%) · avg rounds: 1.0
 
 - [med-rag](https://github.com/hyunaeee/med-rag) — 고려대 안암병원에 납품한 온프렘 진료 보조 RAG 에이전트
 - med-rag-vertex — 같은 시스템의 Vertex AI + ADK(SequentialAgent) 클라우드 포트 + LLM-judge 평가
+- [terracotta](https://github.com/hyunaeee/terracotta) — 같은 원칙(다중 에이전트 협업·교차 검증·비용 평가)이 프로덕트로 구현된 멀티 모델 AI 작업실 — MCP 도구 오케스트레이션 + 교차 검토 + 라우팅 정책 벤치마크
 
 ---
 
